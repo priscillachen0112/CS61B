@@ -1,5 +1,6 @@
 package game2048;
 
+import java.sql.SQLOutput;
 import java.util.Formatter;
 import java.util.Observable;
 
@@ -114,6 +115,33 @@ public class Model extends Observable {
         // for the tilt to the Side SIDE. If the board changed, set the
         // changed local variable to true.
 
+        board.setViewingPerspective(side);
+        int mergedRow = -1;
+        for (int j = 0; j < board.size(); j++) {
+            for (int i = board.size() - 2; i >= 0; i--) {
+                Tile t = tile(j, i);
+                if (t != null) {
+                    int desRow = i + 1;
+                    for (int k = i + 1; k < board.size(); k++) {
+                        if ((tile(j, k) != null && t.value() != tile(j, k).value()) || k == mergedRow) {
+                            desRow = k - 1;
+                        } else if (tile(j, k) != null && t.value() == tile(j, k).value()) {
+                            desRow = k;
+                        } else {
+                            desRow = k;
+                        }
+                    }
+                    System.out.println(t);
+                    System.out.println(board);
+                    if (board.move(j, desRow, t)) {
+                        mergedRow = desRow;
+                        score += t.value() * 2;
+                    }
+                    changed = true;
+                }
+            }
+        }
+
         checkGameOver();
         if (changed) {
             setChanged();
@@ -158,7 +186,7 @@ public class Model extends Observable {
         // TODO: Fill in this function.
         for (int i = 0; i < b.size(); i++) {
             for (int j = 0; j < b.size(); j++) {
-                if (b.tile(i, j).value() == MAX_PIECE) {
+                if (b.tile(i, j) != null && b.tile(i, j).value() == MAX_PIECE) {
                     return true;
                 }
             }
