@@ -107,6 +107,38 @@ public class Model extends Observable {
      *    value, then the leading two tiles in the direction of motion merge,
      *    and the trailing tile does not.
      * */
+    private boolean tiltCol(int col) {
+        boolean changed;
+        changed = false;
+        int mergedRow = -1;
+        for (int i = board.size() - 2; i >= 0; i--) {
+            Tile t = tile(col, i);
+            if (t != null) {
+                int desRow = i + 1;
+                for (int k = i + 1; k < board.size(); k++) {
+                    if ((tile(col, k) != null && t.value() != tile(col, k).value()) || k == mergedRow) {
+                        desRow = k - 1;
+                        break;
+                    } else if (tile(col, k) != null && t.value() == tile(col, k).value()) {
+                        desRow = k;
+                    } else if (tile(col, k) == null) {
+                        desRow = k;
+                    }
+                }
+                System.out.println(t);
+                System.out.println(board);
+                System.out.println(desRow);
+                if (board.move(col, desRow, t)) {
+                    mergedRow = desRow;
+                    score += t.value() * 2;
+                }
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -116,31 +148,12 @@ public class Model extends Observable {
         // changed local variable to true.
 
         board.setViewingPerspective(side);
-        int mergedRow = -1;
         for (int j = 0; j < board.size(); j++) {
-            for (int i = board.size() - 2; i >= 0; i--) {
-                Tile t = tile(j, i);
-                if (t != null) {
-                    int desRow = i + 1;
-                    for (int k = i + 1; k < board.size(); k++) {
-                        if ((tile(j, k) != null && t.value() != tile(j, k).value()) || k == mergedRow) {
-                            desRow = k - 1;
-                        } else if (tile(j, k) != null && t.value() == tile(j, k).value()) {
-                            desRow = k;
-                        } else {
-                            desRow = k;
-                        }
-                    }
-                    System.out.println(t);
-                    System.out.println(board);
-                    if (board.move(j, desRow, t)) {
-                        mergedRow = desRow;
-                        score += t.value() * 2;
-                    }
-                    changed = true;
-                }
-            }
+            if (tiltCol(j)) {
+                changed = true;
+            };
         }
+        board.setViewingPerspective(Side.NORTH);
 
         checkGameOver();
         if (changed) {
