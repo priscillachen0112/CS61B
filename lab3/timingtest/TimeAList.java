@@ -23,15 +23,15 @@ public class TimeAList {
 
     public static void timeAListConstruction() {
         // TODO: YOUR CODE HERE
-        AList Ns = new AList();
+        AList<Integer> Ns = new AList<>();
         for (int i = 1; i <= 128; i *= 2) {
             Ns.addLast(i * 1000);
         }
-        AList times = new AList();
-        AList opCounts = new AList();
+        AList<Double> times = new AList<>();
+        AList<Integer> opCounts = new AList<>();
         for (int i = 0; i < Ns.size(); i++) {
             Stopwatch sw = new Stopwatch();
-            AList testList = new AList();
+            AList<Integer> testList = new AList<>();
             int n = (int) Ns.get(i);
             int op = 0;
             for (int j = 0; j < n; j++) {
