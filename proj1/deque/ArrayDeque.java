@@ -22,7 +22,7 @@ public class ArrayDeque<T> {
     public void addFirst(T item) {
         size += 1;
         items[nextFirst] = item;
-        if (nextFirst - 1 == 0) {
+        if (nextFirst - 1 == -1) {
             nextFirst = items.length - 1;
         } else {
             nextFirst -= 1;
