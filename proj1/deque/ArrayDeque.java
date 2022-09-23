@@ -10,6 +10,7 @@ public class ArrayDeque<T> {
 
     /** Creates an empty array deque. */
     public ArrayDeque() {
+        items = (T[]) new Object[10];
         size = 0;
         nextFirst = 0;
         nextLast = 1;
