@@ -10,10 +10,30 @@ public class ArrayDeque<T> {
 
     /** Creates an empty array deque. */
     public ArrayDeque() {
-        items = (T[]) new Object[10];
+        items = (T[]) new Object[1000000];
         size = 0;
         nextFirst = 0;
         nextLast = 1;
+    }
+
+
+    private int maintainNextFirst(int nextFirst) {
+        if (nextFirst - 1 == -1) {
+            nextFirst = items.length - 1;
+        } else {
+            nextFirst -= 1;
+        }
+        return nextFirst;
+    }
+
+
+    private int maintainNextLast(int nextLast) {
+        if (nextLast + 1 == items.length) {
+            nextLast = 0;
+        } else {
+            nextLast += 1;
+        }
+        return nextLast;
     }
 
 
@@ -22,11 +42,7 @@ public class ArrayDeque<T> {
     public void addFirst(T item) {
         size += 1;
         items[nextFirst] = item;
-        if (nextFirst - 1 == -1) {
-            nextFirst = items.length - 1;
-        } else {
-            nextFirst -= 1;
-        }
+        nextFirst = maintainNextFirst(nextFirst);
     }
 
 
@@ -35,11 +51,7 @@ public class ArrayDeque<T> {
     public void addLast(T item) {
         size += 1;
         items[nextLast] = item;
-        if (nextLast + 1 == items.length) {
-            nextLast = 0;
-        } else {
-            nextLast += 1;
-        }
+        nextLast = maintainNextLast(nextLast);
     }
 
 
@@ -66,11 +78,34 @@ public class ArrayDeque<T> {
     }
 
 
+    private int maintainCurrentFirst(int nextFirst) {
+        if (nextFirst == items.length - 1) {
+            return 0;
+        } else {
+            return nextFirst + 1;
+        }
+    }
+
+
+    private int maintainCurrentLast(int nextLast) {
+        if (nextLast == 0) {
+            return items.length - 1;
+        } else {
+            return nextLast - 1;
+        }
+    }
+
+
     /** Removes and returns the item at the front of the
      * deque. If no such item exists, returns null. */
     public T removeFirst() {
-        T first = items[nextFirst];
-        items[nextFirst] = null;
+        if (size > 0) {
+            size -= 1;
+        }
+        int currentFirst = maintainCurrentFirst(nextFirst);
+        T first = items[currentFirst];
+        items[currentFirst] = null;
+        nextFirst = currentFirst;
         return first;
     }
 
@@ -78,8 +113,13 @@ public class ArrayDeque<T> {
     /** Removes and returns the item at the back of the
      * deque. If no such item exists, returns null. */
     public T removeLast() {
-        T last = items[nextLast];
-        items[nextLast] = null;
+        if (size > 0) {
+            size -= 1;
+        }
+        int currentLast = maintainCurrentLast(nextLast);
+        T last = items[currentLast];
+        items[currentLast] = null;
+        nextLast = currentLast;
         return last;
     }
 
