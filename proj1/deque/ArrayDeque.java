@@ -10,48 +10,54 @@ public class ArrayDeque<T> {
 
     /** Creates an empty array deque. */
     public ArrayDeque() {
-        items = (T[]) new Object[1000000];
+        items = (T[]) new Object[8];
         size = 0;
-        nextFirst = items.length - 1;
-        nextLast = 0;
+        nextFirst = 0;
+        nextLast = 1;
     }
 
 
-    private int maintainNextFirst(int nextFirst) {
-        if (nextFirst - 1 == -1) {
-            nextFirst = items.length - 1;
+    private int minusOne(int index) {
+        if (index == 0) {
+            index = items.length - 1;
         } else {
-            nextFirst -= 1;
+            index -= 1;
         }
-        return nextFirst;
+        return index;
     }
 
 
-    private int maintainNextLast(int nextLast) {
-        if (nextLast + 1 == items.length) {
-            nextLast = 0;
+    private int plusOne(int index) {
+        if (index + 1 == items.length) {
+            index = 0;
         } else {
-            nextLast += 1;
+            index += 1;
         }
-        return nextLast;
+        return index;
     }
 
 
     /** Adds an item of type T to the front of the deque.
      * You can assume that item is never null. */
     public void addFirst(T item) {
-        size += 1;
+        if (size == items.length) {
+            resize(size * 2);
+        }
         items[nextFirst] = item;
-        nextFirst = maintainNextFirst(nextFirst);
+        size += 1;
+        nextFirst = minusOne(nextFirst);
     }
 
 
     /** Adds an item of type T to the back of the deque.
      * You can assume that item is never null. */
     public void addLast(T item) {
-        size += 1;
+        if (size == items.length) {
+            resize(size * 2);
+        }
         items[nextLast] = item;
-        nextLast = maintainNextLast(nextLast);
+        size += 1;
+        nextLast = plusOne(nextLast);
     }
 
 
@@ -71,28 +77,12 @@ public class ArrayDeque<T> {
      * separated by a space. Once all the items have been
      * printed, print out a new line. */
     public void printDeque() {
-        for (int i = nextFirst - 1; i <= nextLast - 1; i++) {
+        int currentFirst = plusOne(nextFirst);
+        int currentLast = minusOne(nextLast);
+        for (int i = currentFirst; i <= currentLast; i++) {
             System.out.println(items[i] + " ");
         }
         System.out.println();
-    }
-
-
-    private int maintainCurrentFirst(int nextFirst) {
-        if (nextFirst == items.length - 1) {
-            return 0;
-        } else {
-            return nextFirst + 1;
-        }
-    }
-
-
-    private int maintainCurrentLast(int nextLast) {
-        if (nextLast == 0) {
-            return items.length - 1;
-        } else {
-            return nextLast - 1;
-        }
     }
 
 
@@ -102,7 +92,10 @@ public class ArrayDeque<T> {
         if (size > 0) {
             size -= 1;
         }
-        int currentFirst = maintainCurrentFirst(nextFirst);
+        if ((size < items.length / 4) && (size > 4)) {
+            resize(items.length / 4);
+        }
+        int currentFirst = plusOne(nextFirst);
         T first = items[currentFirst];
         items[currentFirst] = null;
         nextFirst = currentFirst;
@@ -116,7 +109,10 @@ public class ArrayDeque<T> {
         if (size > 0) {
             size -= 1;
         }
-        int currentLast = maintainCurrentLast(nextLast);
+        if ((size < items.length / 4) && (size > 4)) {
+            resize(items.length / 4);
+        }
+        int currentLast = minusOne(nextLast);
         T last = items[currentLast];
         items[currentLast] = null;
         nextLast = currentLast;
@@ -129,9 +125,25 @@ public class ArrayDeque<T> {
      * such item exists, returns null. Must not alter the
      * deque! */
     public T get(int index) {
-        return items[index];
+        int currentFirst = plusOne(nextFirst);
+        int itemsIndex = currentFirst + index;
+        return items[itemsIndex];
     }
 
+
+    public void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
+        int currentFirst = plusOne(nextFirst);
+        int currentLast = minusOne(nextLast);
+        for (int i = items.length - 1; i >= currentFirst; i -= 1) {
+            a[i + items.length] = items[i];
+        }
+        for (int i = 0; i <= currentLast; i += 1) {
+            a[i] = items[i];
+        }
+        nextFirst = currentFirst + items.length - 1;
+        items = a;
+    }
 
     /** The deque objects we'll make are iterable (i.e.
      * Iterable<T>) so we must provide this method to
