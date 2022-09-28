@@ -103,12 +103,16 @@ public class ArrayDequeTest {
         }
 
         assertEquals(lld1.size(), 50);
+        int ret1 = lld1.get(49);
+        assertEquals(ret1, 49);
 
         for (double i = 0; i < 25; i++) {
             assertEquals("Should have the same value", i, (double) lld1.removeFirst(), 0.0);
         }
 
         assertEquals(lld1.size(), 25);
+        int ret2 = lld1.get(24);
+        assertEquals(ret2, 49);
 
         for (double i = 49; i > 25; i--) {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);

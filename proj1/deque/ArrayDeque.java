@@ -3,10 +3,10 @@ package deque;
 import java.util.Iterator;
 
 public class ArrayDeque<T> {
-    T[] items;
-    int size;
-    int nextFirst;
-    int nextLast;
+    private T[] items;
+    private int size;
+    private int nextFirst;
+    private int nextLast;
 
     /** Creates an empty array deque. */
     public ArrayDeque() {
@@ -126,12 +126,15 @@ public class ArrayDeque<T> {
      * deque! */
     public T get(int index) {
         int currentFirst = plusOne(nextFirst);
-        int itemsIndex = currentFirst + index;
-        return items[itemsIndex];
+        if (currentFirst + index >= items.length) {
+            return items[currentFirst + index - items.length];
+        } else {
+            return items[currentFirst + index];
+        }
     }
 
 
-    public void resize(int capacity) {
+    private void resize(int capacity) {
         T[] a = (T[]) new Object[capacity];
         int currentFirst = plusOne(nextFirst);
         int currentLast = minusOne(nextLast);

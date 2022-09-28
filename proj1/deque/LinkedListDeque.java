@@ -120,7 +120,7 @@ public class LinkedListDeque<T> implements Iterable<T> {
     }
 
 
-    public T getRecursiveHelper(Node<T> start, int index) {
+    private T getRecursiveHelper(Node<T> start, int index) {
         if (index == 0) {
             return start.item;
         } else {
