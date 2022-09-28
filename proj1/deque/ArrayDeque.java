@@ -135,13 +135,35 @@ public class ArrayDeque<T> {
         T[] a = (T[]) new Object[capacity];
         int currentFirst = plusOne(nextFirst);
         int currentLast = minusOne(nextLast);
+        if (a.length < items.length) {
+            downsize(currentFirst, currentLast, a);
+        } else {
+            upsize(currentFirst, currentLast, a);
+        }
+    }
+
+
+    private void upsize(int currentFirst, int currentLast, T[] a) {
+        int j = items.length * 2 - 1;
         for (int i = items.length - 1; i >= currentFirst; i -= 1) {
-            a[i + items.length] = items[i];
+            a[j] = items[i];
+            j -= 1;
         }
-        for (int i = 0; i <= currentLast; i += 1) {
-            a[i] = items[i];
+        nextFirst = j;
+        for (int k = 0; k <= currentLast; k += 1) {
+            a[k] = items[k];
         }
-        nextFirst = currentFirst + items.length - 1;
+        items = a;
+    }
+
+
+    private void downsize(int currentFirst, int currentLast, T[] a) {
+        int j = 0;
+        for (int i = currentFirst; i <= currentLast; i += 1) {
+            a[j] = items[i];
+            j += 1;
+        }
+        nextLast = j;
         items = a;
     }
 

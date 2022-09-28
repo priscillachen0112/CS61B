@@ -98,19 +98,19 @@ public class ArrayDequeTest {
     /* Add large number of elements to deque; check if order is correct. */
     public void bigLLDequeTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 50; i++) {
             lld1.addLast(i);
         }
-        lld1.printDeque();
-        int retValue = lld1.get(0);
-        assertEquals(0, retValue);
 
-        for (double i = 0; i < 10; i++) {
-            double ret = (double) lld1.removeFirst();
-            assertEquals("Should have the same value", i, ret, 0.0);
+        assertEquals(lld1.size(), 50);
+
+        for (double i = 0; i < 25; i++) {
+            assertEquals("Should have the same value", i, (double) lld1.removeFirst(), 0.0);
         }
 
-        for (double i = 10; i > 10; i--) {
+        assertEquals(lld1.size(), 25);
+
+        for (double i = 49; i > 25; i--) {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
     }
